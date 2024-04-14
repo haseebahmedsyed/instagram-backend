@@ -10,9 +10,11 @@ export const authMiddleware = async (req, res, next) => {
             'SELECT * FROM users WHERE id=$1',
             [decode.id]
         )
-        req.user = user?.rows[0];
-        next();
-    } else {
-        throw new Error('Unable to perform action')
+        if (user && user.rows && user.rows.length) {
+            user = user.rows[0]
+            let { password, ...userObj } = user;
+            req.user = userObj;
+        }
     }
+    next();
 }
