@@ -7,12 +7,19 @@ import { pool } from './database/connection.js'
 import { ruruHTML } from "ruru/server"
 import cookieParser from 'cookie-parser';
 import { authMiddleware } from "./middleware/auth.js";
+import { v2 as cloudinary } from 'cloudinary';
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(authMiddleware);
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const yoga = createYoga({
     schema: schema,

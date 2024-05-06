@@ -10,3 +10,31 @@ CREATE TABLE users (
     profile_image VARCHAR(255),
     bio VARCHAR(255)
 );
+
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    userid INT NOT NULL,
+    imageurl VARCHAR(255),
+    caption VARCHAR(255),
+    createdat TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY(userid) REFERENCES users(id)
+);
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    userid INT NOT NULL,
+    postid INT NOT NULL,
+    text VARCHAR(255) NOT NULL,
+    createdat TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (userid) REFERENCES users(id),
+    FOREIGN KEY (postid) REFERENCES posts(id)
+);
+
+CREATE TABLE likes (
+    id SERIAL PRIMARY KEY,
+    userid INT NOT NULL,
+    postid INT NOT NULL,
+    createdat TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (userid) REFERENCES users(id),
+    FOREIGN KEY (postid) REFERENCES posts(id)
+);
