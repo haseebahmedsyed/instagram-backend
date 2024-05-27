@@ -38,3 +38,11 @@ CREATE TABLE likes (
     FOREIGN KEY (userid) REFERENCES users(id),
     FOREIGN KEY (postid) REFERENCES posts(id)
 );
+
+CREATE TABLE follows (
+    id SERIAL PRIMARY KEY,
+    followerid INT NOT NULL,
+    followingid INT NOT NULL,
+    FOREIGN KEY (followerid) REFERENCES users(id),
+    FOREIGN KEY (followingid) REFERENCES users(id)
+);

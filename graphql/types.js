@@ -17,7 +17,8 @@ type Post {
     caption: String,
     createdat: DateTime,
     comments : [Comment],
-    likes: [Like]
+    likes: [Like],
+    user: User
 }
 
 type Comment {
@@ -33,6 +34,11 @@ type Like {
     userid: Int!,
     postid: Int!,
     createdat: DateTime
+}
+
+type UserProfileAndFeed {
+    user: User,
+    feed: [Post]
 }
 
 `

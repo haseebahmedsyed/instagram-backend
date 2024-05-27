@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { UserInputError } from 'apollo-server';
 
 const createJsonWebToken = ({ id }) => {
     return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -14,4 +15,9 @@ export const createCookie = (res, user) => {
     const token = createJsonWebToken(user)
     res.cookie("token", token, options);
     return res;
+}
+
+export function checkUserAuthorization(req) {
+    if (!req.user)
+        throw new UserInputError('You are not authorized to perform any action');
 }

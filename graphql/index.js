@@ -3,8 +3,10 @@ import { inputs } from './input.js';
 import { types } from './types.js';
 import { authQuery } from './queries/auth.js';
 import { postQuery } from './queries/post.js';
+import { followQuery } from './queries/follow.js';
 import { authResolver } from './resolvers/auth.js';
 import { postResolver } from './resolvers/post.js';
+import { followResolver } from './resolvers/follow.js';
 import { DateTimeResolver, DateTimeTypeDefinition } from 'graphql-scalars'
 import _ from 'lodash';
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
@@ -26,6 +28,6 @@ let resolvers = {
 }
 
 export const schema = createSchema({
-    typeDefs: [quereis, inputs, types, authQuery, postQuery],
-    resolvers: _.merge(resolvers, {}, authResolver, postResolver)
+    typeDefs: [quereis, inputs, types, authQuery, postQuery,followQuery],
+    resolvers: _.merge(resolvers, {}, authResolver, postResolver,followResolver)
 })

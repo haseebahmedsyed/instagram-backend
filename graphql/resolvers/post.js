@@ -1,15 +1,11 @@
 import { UserInputError } from 'apollo-server';
+import { checkUserAuthorization } from '../../utils.js';
 
 function queryValuesForDB(data) {
     const fields = Object.keys(data).join(', ');
     const placeholders = Object.keys(data).map((_, index) => `$${index + 1}`).join(', ');
     const values = Object.values(data);
     return { fields, placeholders, values }
-}
-
-function checkUserAuthorization(req) {
-    if (!req.user)
-        throw new UserInputError('You are not authorized to upload any post');
 }
 
 export const postResolver = {
@@ -28,6 +24,28 @@ export const postResolver = {
                 throw new UserInputError(error);
             }
         },
+        getFeedAndUserProfile: async (_, { }, { pool, req, res }) => {
+            try {
+                checkUserAuthorization(req);
+                let user = await pool.query(
+                    `SELECT * FROM users WHERE id=$1`,
+                    [req.user.id]
+                )
+                let feed = await pool.query(`
+                    SELECT * FROM posts INNER JOIN users ON posts.userid = users.id WHERE users.id IN (
+                        SELECT followingid from follows WHERE followerid=$1
+                    )
+                `, [req.user.id])
+
+                user = user.rows ? user.rows[0] : null
+                feed = feed.rows ? feed.rows : []
+
+                return { user, feed }
+            } catch (error) {
+                console.log(error)
+                throw new UserInputError(error);
+            }
+        }
 
     },
     Mutation: {
@@ -101,5 +119,16 @@ export const postResolver = {
                 console.log(error)
             }
         },
+        user: async (obj, { }, { pool, req, res }) => {
+            try {
+                let user = await pool.query(
+                    `SELECT * FROM users WHERE id=$1`,
+                    [obj.userid]
+                )
+                return user.rows ? user.rows[0] : null
+            } catch (error) {
+                console.log(error)
+            }
+        }
     }
 }
