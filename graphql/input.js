@@ -17,6 +17,13 @@ input postInput {
     file: Upload
 }
 
+input storyInput {
+    userid: Int!,
+    media: String,
+    caption: String,
+    createdat: DateTime
+}
+
 input likeInput {
     id:ID,
     userid: Int!,
@@ -30,5 +37,10 @@ input commentInput {
     postid:Int!,
     text:String!,
     createdat: DateTime,
+}
+
+input messageInput{
+    reciever: ID!,
+    content: String
 }
 `

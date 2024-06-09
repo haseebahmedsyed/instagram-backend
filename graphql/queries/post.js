@@ -1,7 +1,7 @@
 export const postQuery = `
     type Query {
         getPostByUserId(userid: Int) : [Post],
-        getFeedAndUserProfile : UserProfileAndFeed
+        getFeedAndUserProfile : UserProfileAndFeeds,
     }
     type Mutation {
         uploadPost(post : postInput) : Post,

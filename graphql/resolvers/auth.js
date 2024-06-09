@@ -18,7 +18,8 @@ export const authResolver = {
                     return user;
                 }
             }
-            throw new UserInputError('Incorrect Credentials');
+            // throw new UserInputError('Incorrect Credentials');
+            return res.status(401).json({ error: 'Incorrect Credentials' });
         }
     },
 
@@ -31,7 +32,8 @@ export const authResolver = {
                 )
                 console.log(isUserExists)
                 if (isUserExists?.rows[0]?.count !== '0')
-                    throw new UserInputError('Try with another username');
+                    // throw new UserInputError('Try with another username');
+                    return res.json({ error: 'Try with another username' });
 
                 user['password'] = await bcrypt.hash(user.password, 10);
                 const fields = Object.keys(user).join(', ');
@@ -46,7 +48,8 @@ export const authResolver = {
                 return userObj;
             } catch (error) {
                 console.error("Error during signup:", error);
-                throw new UserInputError('Error during signup');
+                // throw new UserInputError('Error during signup');
+                return res.json({ error: 'Something went wrong' });
             }
         }
     }

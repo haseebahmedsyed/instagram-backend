@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken'
+import cron from 'node-cron'
 import { UserInputError } from 'apollo-server';
+
+var scheduledJobs = {}
 
 const createJsonWebToken = ({ id }) => {
     return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -17,7 +20,30 @@ export const createCookie = (res, user) => {
     return res;
 }
 
-export function checkUserAuthorization(req) {
-    if (!req.user)
-        throw new UserInputError('You are not authorized to perform any action');
+export function queryValuesForDB(data) {
+    const fields = Object.keys(data).join(', ');
+    const placeholders = Object.keys(data).map((_, index) => `$${index + 1}`).join(', ');
+    const values = Object.values(data);
+    return { fields, placeholders, values }
+}
+
+export function sheculeArchiving(table, id, pool) {
+    let query = `UPDATE ${table} SET isarchieved=$1 WHERE id=$2`
+    console.log("Archiving started...")
+    let job = cron.schedule('0 0 */24 * * *', async () => {
+        await pool.query(query, [true, id])
+        console.log("story deleted...")
+        job.stop();
+        delete scheduledJobs[`${table}-` + id]
+        console.log("job destroyed...")
+    })
+    scheduledJobs[`${table}-` + id] = job;
+}
+
+export function cancelArchiving(table, id) {
+    if (scheduledJobs[`${table}-` + id]) {
+        console.log("destroying cron job...")
+        scheduledJobs[`${table}-` + id].stop();
+        delete scheduledJobs[`${table}-` + id]
+    }
 }

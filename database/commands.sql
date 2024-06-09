@@ -46,3 +46,35 @@ CREATE TABLE follows (
     FOREIGN KEY (followerid) REFERENCES users(id),
     FOREIGN KEY (followingid) REFERENCES users(id)
 );
+
+CREATE TABLE stories (
+    id SERIAL PRIMARY KEY,
+    userid INT NOT NULL,
+    media VARCHAR(255),
+    caption VARCHAR(255),
+    createdat TIMESTAMP DEFAULT NOW(),
+    isArchieved Boolean DEFAULT false,
+    FOREIGN KEY(userid) REFERENCES users(id)
+);
+
+CREATE TABLE storyviewers (
+    id SERIAL PRIMARY KEY,
+    viewerid INT NOT NULL,
+    storyid INT NOT NULL,
+    FOREIGN KEY(viewerid) REFERENCES users(id),
+    FOREIGN KEY(storyid) REFERENCES stories(id)
+);
+
+CREATE TABLE chats (
+    id SERIAL PRIMARY KEY,
+    sender INT NOT NULL,
+    reciever INT NOT NULL,
+    content VARCHAR(255),
+    createdat TIMESTAMP DEFAULT NOW(),
+    seen Boolean DEFAULT false,
+    seenat TIMESTAMP,
+    FOREIGN KEY(sender) REFERENCES users(id),
+    FOREIGN KEY(reciever) REFERENCES users(id)
+);
+
+    

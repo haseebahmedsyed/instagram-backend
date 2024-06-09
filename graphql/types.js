@@ -21,6 +21,17 @@ type Post {
     user: User
 }
 
+type Story {
+    id:ID,
+    userid: Int!,
+    media: String,
+    caption: String,
+    createdat: DateTime,
+    isArchieved: Boolean!
+    user: User,
+    viewers:[User]
+}
+
 type Comment {
     id: ID,
     userid: Int!,
@@ -36,9 +47,25 @@ type Like {
     createdat: DateTime
 }
 
-type UserProfileAndFeed {
+type UserProfileAndFeeds {
     user: User,
-    feed: [Post]
+    feed: [Post],
+    stories: [Story]
 }
 
+type storyViews{
+    id:ID,
+    storyid:ID,
+    viewerid:ID
+}
+
+type Message{
+    id: ID,
+    sender: ID!,
+    reciever: ID!,
+    content: String,
+    createdat: DateTime ,
+    seen: Boolean,
+    seenat: DateTime
+}
 `
